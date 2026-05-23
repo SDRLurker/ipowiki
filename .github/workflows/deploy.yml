@@ -40,10 +40,8 @@ jobs:
 
       - name: 빌드 결과물 업로드
         uses: actions/upload-pages-artifact@v3
-        with:
-          # config.ts에서 outDir 설정을 지웠을 때의 기본 경로.
-          # 만약 outDir: 'dist'로 설정했다면 이 부분을 'dist'로 변경해야 함.
-          path: .vitepress/dist
+        with:          
+          path: ./dist
 
   deploy:
     environment:

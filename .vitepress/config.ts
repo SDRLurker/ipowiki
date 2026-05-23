@@ -4,7 +4,7 @@ export default defineConfig({
   title: "IPO 위키",
   description: "IPO Information powered by Vue",
   base: process.env.NODE_ENV === 'production' ? '/ipowiki/' : '/',
-  outDir: 'dist',
+  outDir: './dist',
   themeConfig: {
     nav: [],
     docFooter: {
