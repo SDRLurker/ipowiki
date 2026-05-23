@@ -1,0 +1,58 @@
+# GitHub Action 배포 지시서
+name: Deploy VitePress site to Pages
+
+# main 브랜치에 코드가 Push 될 때마다 자동으로 실행됨
+on:
+  push:
+    branches: [main]
+
+# GitHub Pages 배포를 위한 권한 설정
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 코드 가져오기
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node.js 20 버전 환경 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 패키지 설치
+        run: npm install
+
+      - name: VitePress 빌드 실행
+        run: npm run docs:build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+
+      - name: 빌드 결과물 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # config.ts에서 outDir 설정을 지웠을 때의 기본 경로.
+          # 만약 outDir: 'dist'로 설정했다면 이 부분을 'dist'로 변경해야 함.
+          path: .vitepress/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: GitHub Pages에 최종 배포
+        id: deployment
+        uses: actions/deploy-pages@v4
