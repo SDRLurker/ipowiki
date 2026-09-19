@@ -11,4 +11,6 @@ features:
     link: /broker
   - title: 확정공고
     link: /stock
+  - title: 환매청구권
+    link: /putback
 ---
